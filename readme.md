@@ -20,11 +20,17 @@ Includes many configuration options such as Aikar's flags, automatic restarting,
 
 Inspired by [startmc.sh](https://startmc.sh), built with [Blitz.js](https://blitzjs.com) and [Mantine UI](https://mantine.dev).
 
-### 🔨 Building
+### 🔧 Setup
 Ensure [Yarn](https://yarnpkg.com) and [Node.js](https://nodejs.org/en) are installed.
 
 1. Enter the directory containing the flags.sh source code in your terminal.
 2. Install the build dependencies via `yarn install`.
-3. Either start a live development environment, or build for production.
-   - `yarn run dev`: Start a live development environment
-   - `yarn run export`: Build for production to `/out/`
+
+### 🔨 Running
+First, run through the [setup](-setup) steps.
+
+- To start a live development build, run `yarn run start:dev`.
+  - This will start a server that updates code changes automatically.
+  - This does not generate optimized assets, do not expose this to the public!
+- To start a production build, run `yarn run start:prod`.
+  - This generates optimized assets.

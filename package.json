@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "blitz dev",
     "build": "blitz build",
-    "export": "blitz build && blitz export",
-    "start": "blitz start"
+    "start:dev": "blitz dev",
+    "start:prod": "npm run build && blitz start"
   },
   "dependencies": {
     "@encode42/mantine-extras": "^1.0.2",
