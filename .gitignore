@@ -9,3 +9,6 @@
 !.env
 .env.local
 .env.test.local
+
+/db/db.sqlite
+/db/db.sqlite-journal

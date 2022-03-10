@@ -2,6 +2,7 @@ import { stripIndent } from "common-tags";
 import { DisabledOptions } from "./interface/DisabledOptions";
 import { ReactElement } from "react";
 import { IconBrandDebian, IconBrandWindows, IconTerminal } from "@tabler/icons";
+import { Keyed } from "../util/Keyed";
 
 /**
  * The header used in Linux scripts/
@@ -36,7 +37,7 @@ export type EnvironmentIcon = "linux" | "windows" | "command";
 /**
  * An environment type.
  */
-export interface EnvironmentType {
+export interface EnvironmentType extends Keyed {
     /**
      * The key utilized in the environment tab.
      */

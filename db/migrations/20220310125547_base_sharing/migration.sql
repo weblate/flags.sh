@@ -7,15 +7,15 @@ CREATE TABLE "Share" (
 
 -- CreateTable
 CREATE TABLE "Options" (
+    "shareId" INTEGER NOT NULL,
     "filename" TEXT NOT NULL,
-    "memory" INTEGER NOT NULL,
+    "memory" REAL NOT NULL,
     "pterodactyl" BOOLEAN NOT NULL,
     "modernVectors" BOOLEAN NOT NULL,
     "gui" BOOLEAN NOT NULL,
     "autoRestart" BOOLEAN NOT NULL,
     "flags" TEXT NOT NULL,
     "environment" TEXT NOT NULL,
-    "shareId" INTEGER NOT NULL,
     CONSTRAINT "Options_shareId_fkey" FOREIGN KEY ("shareId") REFERENCES "Share" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

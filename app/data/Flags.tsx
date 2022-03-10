@@ -1,4 +1,5 @@
 import { DisabledOptions } from "./interface/DisabledOptions";
+import { Keyed } from "../util/Keyed";
 
 /**
  * Additional configuration for Aikar's flags.
@@ -52,12 +53,7 @@ interface SuffixOptions {
 /**
  * A flag type.
  */
-export interface FlagType {
-    /**
-     * The key utilized in the flag selector.
-     */
-    "key": string,
-
+export interface FlagType extends Keyed {
     /**
      * The label to use in the flag selector.
      */
@@ -91,9 +87,7 @@ export interface FlagsInterface {
     /**
      * Flag types.
      */
-    "types": {
-        [key: string]: FlagType
-    },
+    "types": FlagType[],
 
     /**
      * Prefix of every flag type.
@@ -111,39 +105,35 @@ export interface FlagsInterface {
  */
 export const Flags: FlagsInterface = {
     get "default"() {
-        return this.types.aikars;
+        return this.types[1];
     },
-    "types": {
-        "none": {
-            "key": "none",
-            "label": "None",
-            "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
-                return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${Flags.suffix({ filename, gui })}`;
-            }
-        },
-        "aikars": {
-            "key": "aikars",
-            "label": "Aikar's Flags",
-            "description": "The high-performance and recommended flags.",
-            "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
-                const base = `${aikarsFlags.base} ${memory >= 12 ? aikarsFlags.large : aikarsFlags.standard}`;
-                return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${base} ${Flags.suffix({ filename, gui })}`;
-            }
-        },
-        "velocity": {
-            "key": "velocity",
-            "label": "Velocity & Waterfall",
-            "description": "Flags that work best with proxy software.",
-            "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
-                const base = "-XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15";
-                return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${base} ${Flags.suffix({ filename, gui })}`;
-            },
-            "disabled": {
-                "gui": true,
-                "modernVectors": true
-            }
+    "types": [{
+        "key": "none",
+        "label": "None",
+        "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
+            return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${Flags.suffix({ filename, gui })}`;
         }
-    },
+    }, {
+        "key": "aikars",
+        "label": "Aikar's Flags",
+        "description": "The high-performance and recommended flags.",
+        "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
+            const base = `${aikarsFlags.base} ${memory >= 12 ? aikarsFlags.large : aikarsFlags.standard}`;
+            return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${base} ${Flags.suffix({ filename, gui })}`;
+        }
+    }, {
+        "key": "velocity",
+        "label": "Velocity & Waterfall",
+        "description": "Flags that work best with proxy software.",
+        "result": ({ memory, filename, gui, pterodactyl, modernVectors }) => {
+            const base = "-XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15";
+            return `${Flags.prefix({ memory, pterodactyl, modernVectors })} ${base} ${Flags.suffix({ filename, gui })}`;
+        },
+        "disabled": {
+            "gui": true,
+            "modernVectors": true
+        }
+    }],
     "prefix": ({ memory, pterodactyl, modernVectors }) => {
         const displayMemory = `${(memory * 1024)?.toFixed(0)}M`;
         let base = `java -Xms${displayMemory} -Xmx${displayMemory}`;

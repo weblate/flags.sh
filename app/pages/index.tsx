@@ -14,7 +14,7 @@ import { useMutation, useRouter } from "blitz";
 import share from "../mutations/share";
 import { EnvironmentTab, getEnvironments } from "../util/getEnvironments";
 import { FlagSelector, getFlags } from "../util/getFlags";
-import { findEnvironment } from "../util/util";
+import { findEnvironment, findFlag } from "../util/util";
 
 // TODO: API
 // TODO: Share button
@@ -35,8 +35,8 @@ const defaultData = {
     "modernVectors": true,
     "gui": false,
     "autoRestart": false,
-    "flags": "aikars",
-    "environment": "linux"
+    "flags": Flags.default.key,
+    "environment": Environments.default.key
 };
 
 /**
@@ -63,7 +63,7 @@ function Home({ data = defaultData, environments, flags }: HomeProps) {
     const [result, setResult] = useState<string>("Loading...");
 
     const [environment, setEnvironment] = useState<EnvironmentType>(findEnvironment(data.environment));
-    const [selectedFlags, setSelectedFlags] = useState<FlagType>(Flags.default);
+    const [selectedFlags, setSelectedFlags] = useState<FlagType>(findFlag(data.flags));
     const [invalidFilename, setInvalidFilename] = useState<boolean | string>(false);
 
     const [openMemoryModal, setOpenMemoryModal] = useState(false);
@@ -190,7 +190,7 @@ function Home({ data = defaultData, environments, flags }: HomeProps) {
                                             return;
                                         }
 
-                                        setSelectedFlags(Flags.types[value] ?? selectedFlags);
+                                        setSelectedFlags(findFlag(value) ?? selectedFlags);
                                     }} data={flags} />
                                 </Label>
 

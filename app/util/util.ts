@@ -1,7 +1,9 @@
 /**
  * The website's details and links.
  */
-import { Environments } from "../data/Environments";
+import { Environments, EnvironmentType } from "../data/Environments";
+import { Flags, FlagType } from "../data/Flags";
+import { Keyed } from "./Keyed";
 
 export const SiteDetails = {
     "title": "flags.sh",
@@ -14,10 +16,10 @@ export const SiteDetails = {
     }
 };
 
-export function findEnvironment(key: string) {
+function findKey<T extends Keyed>(set: T[], key: string): T {
     let result;
 
-    for (const value of Environments.types) {
+    for (const value of set) {
         if (key === value.key) {
             result = value;
             break;
@@ -25,4 +27,12 @@ export function findEnvironment(key: string) {
     }
 
     return result;
+}
+
+export function findEnvironment(key: string) {
+    return findKey<EnvironmentType>(Environments.types, key);
+}
+
+export function findFlag(key: string) {
+    return findKey<FlagType>(Flags.types, key);
 }

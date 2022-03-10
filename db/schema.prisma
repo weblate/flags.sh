@@ -24,7 +24,7 @@ model Options {
   share         Share   @relation(fields: [shareId], references: [id])
   shareId       Int
   filename      String
-  memory        Int
+  memory        Float
   pterodactyl   Boolean
   modernVectors Boolean
   gui           Boolean
