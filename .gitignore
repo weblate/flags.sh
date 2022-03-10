@@ -1,2 +1,11 @@
+# Node
+/node_modules/
+
+# Blitz
 /.next/
 .blitz.config.compiled.js
+
+# Prisma
+!.env
+.env.local
+.env.test.local

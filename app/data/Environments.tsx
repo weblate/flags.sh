@@ -38,19 +38,24 @@ export type EnvironmentIcon = "linux" | "windows" | "command";
  */
 export interface EnvironmentType {
     /**
-     * The name of the exported file.
+     * The key utilized in the environment tab.
      */
-    "file"?: string,
+    "key": string,
 
     /**
-     * The label to use in the environment tab.
+     * The label utilized in the environment tab.
      */
     "label": string,
 
     /**
-     * The icon to use in the environment tab.
+     * The icon utilized in the environment tab.
      */
     "icon": EnvironmentIcon,
+
+    /**
+     * The name of the exported file.
+     */
+    "file"?: string,
 
     /**
      * The function used to get the results.
@@ -80,9 +85,7 @@ export interface EnvironmentsInterface {
     /**
      * Environment types.
      */
-    "types": {
-        [key: string]: EnvironmentType
-    }
+    "types": EnvironmentType[]
 }
 
 /**
@@ -90,71 +93,70 @@ export interface EnvironmentsInterface {
  */
 export const Environments: EnvironmentsInterface = {
     get "default"() {
-        return this.types.linux;
+        return this.types[0];
     },
-    "types": {
-        "linux": {
-            "label": "Linux / Mac",
-            "icon": "linux",
-            "file": "start.sh",
-            "result": ({ flags, autoRestart }) => {
-                return stripIndent(!autoRestart ? `
-                    ${linuxHeader}
+    "types": [{
+        "key": "linux",
+        "label": "Linux / Mac",
+        "icon": "linux",
+        "file": "start.sh",
+        "result": ({ flags, autoRestart }) => {
+            return stripIndent(!autoRestart ? `
+                ${linuxHeader}
 
+                ${flags}
+            `: `
+                ${linuxHeader}
+                
+                while [ true ]; do
                     ${flags}
-                `: `
-                    ${linuxHeader}
-                    
-                    while [ true ]; do
-                        ${flags}
-                    
-                        echo Server restarting...
-                        echo Press CTRL + C to stop.
-                    done
-                `);
-            },
-            "disabled": {
-                "pterodactyl": true
-            }
-        },
-        "windows": {
-            "label": "Windows",
-            "icon": "windows",
-            "file": "start.bat",
-            "result": ({ flags, autoRestart }) => {
-                return stripIndent(!autoRestart ? `
-                    ${flags}
-                ` : `
-                    :start
-                    ${flags}
-                    
+                
                     echo Server restarting...
                     echo Press CTRL + C to stop.
-                    goto :start
-                `);
-            },
-            "disabled": {
-                "pterodactyl": true
-            }
+                done
+            `);
         },
-        "java": {
-            "label": "Java",
-            "icon": "command",
-            "result": ({ flags }) => {
-                return flags;
-            },
-            "disabled": {
-                "pterodactyl": false,
-                "autoRestart": true,
-                "download": true
-            },
-            "requires": {
-                "gui": {
-                    "excludes": ["pterodactyl"]
-                }
+        "disabled": {
+            "pterodactyl": true
+        }
+    }, {
+        "key": "windows",
+        "label": "Windows",
+        "icon": "windows",
+        "file": "start.bat",
+        "result": ({ flags, autoRestart }) => {
+            return stripIndent(!autoRestart ? `
+                ${flags}
+            ` : `
+                :start
+                ${flags}
+                
+                echo Server restarting...
+                echo Press CTRL + C to stop.
+                goto :start
+            `);
+        },
+        "disabled": {
+            "pterodactyl": true
+        }
+    }, {
+        "key": "java",
+        "label": "Java",
+        "icon": "command",
+        "result": ({ flags }) => {
+            return flags;
+        },
+        "disabled": {
+            "pterodactyl": false,
+            "autoRestart": true,
+            "download": true
+        },
+        "requires": {
+            "gui": {
+                "excludes": ["pterodactyl"]
             }
         }
-    }
+    }]
 };
 
 /**

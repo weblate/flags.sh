@@ -20,16 +20,16 @@ export default function App({ Component, pageProps }: AppProps) {
     const getLayout = Component.getLayout || (page => page);
 
     return (
-        <ErrorBoundary FallbackComponent={RootErrorFallback} onReset={useQueryErrorResetBoundary().reset}>
-            <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-                <MantineProvider withGlobalStyles withNormalizeCSS theme={{
-                    "primaryColor": "green",
-                    colorScheme
-                }}>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+            <MantineProvider withGlobalStyles withNormalizeCSS theme={{
+                "primaryColor": "green",
+                colorScheme
+            }}>
+                <ErrorBoundary FallbackComponent={RootErrorFallback} onReset={useQueryErrorResetBoundary().reset}>
                     {getLayout(<Component {...pageProps} />)}
-                </MantineProvider>
-            </ColorSchemeProvider>
-        </ErrorBoundary>
+                </ErrorBoundary>
+            </MantineProvider>
+        </ColorSchemeProvider>
     );
 }
 

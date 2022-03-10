@@ -1,6 +1,8 @@
 /**
  * The website's details and links.
  */
+import { Environments } from "../data/Environments";
+
 export const SiteDetails = {
     "title": "flags.sh",
     "description": "A simple script generator to start your Minecraft servers with optimal flags.",
@@ -11,3 +13,16 @@ export const SiteDetails = {
         "support": "https://encode42.dev/support"
     }
 };
+
+export function findEnvironment(key: string) {
+    let result;
+
+    for (const value of Environments.types) {
+        if (key === value.key) {
+            result = value;
+            break;
+        }
+    }
+
+    return result;
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Center, Group, Paper, Text, TextInput, Switch, Code, ActionIcon, useMantineColorScheme, Select } from "@mantine/core";
 import { InputCaption, Label, MarkedSlider, saveText, SelectDescription, SideBySide } from "@encode42/mantine-extras";
-import { IconAlertCircle, IconArchive, IconDownload, IconTool } from "@tabler/icons";
+import { IconAlertCircle, IconArchive, IconDownload, IconShare, IconTool } from "@tabler/icons";
 import { Prism } from "@mantine/prism";
 import { Layout } from "../core/layout/Layout";
 import { PageTitle } from "../core/components/PageTitle";
@@ -9,7 +9,12 @@ import { FooterRow } from "../core/components/actionButton/FooterRow";
 import { FlagModal } from "../core/components/modal/FlagModal";
 import { MemoryModal } from "../core/components/modal/MemoryModal";
 import { Flags, FlagType } from "../data/Flags";
-import { EnvironmentIcon, Environments, EnvironmentType, getIcon } from "../data/Environments";
+import { Environments, EnvironmentType, getIcon } from "../data/Environments";
+import { useMutation, useRouter } from "blitz";
+import share from "../mutations/share";
+import { EnvironmentTab, getEnvironments } from "../util/getEnvironments";
+import { FlagSelector, getFlags } from "../util/getFlags";
+import { findEnvironment } from "../util/util";
 
 // TODO: API
 // TODO: Share button
@@ -17,58 +22,47 @@ import { EnvironmentIcon, Environments, EnvironmentType, getIcon } from "../data
 
 // BUG: Java tab -> enable pterodactyl -> apply -> disable pterodactyl -> apply -> GUI will still be disabled
 
-/**
- * Data for a flag in the selector.
- */
-interface FlagSelector {
-    /**
-     * Key of the entry.
-     */
-    "value": string,
-
-    /**
-     * Label of the entry.
-     */
-    "label": string,
-
-    /**
-     * Description of the entry.
-     */
-    "description"?: string
-}
-
-interface EnvironmentTab {
-    "key": string,
-    "label": string,
-    "icon": EnvironmentIcon
-}
-
 interface HomeProps {
-    "environmentTabs": EnvironmentTab[],
-    "flagSelectors": FlagSelector[]
+    "data"?: typeof defaultData,
+    "environments": EnvironmentTab[],
+    "flags": FlagSelector[]
 }
+
+const defaultData = {
+    "filename": "server.jar",
+    "memory": 4,
+    "pterodactyl": false,
+    "modernVectors": true,
+    "gui": false,
+    "autoRestart": false,
+    "flags": "aikars",
+    "environment": "linux"
+};
 
 /**
  * The homepage of the site.
  */
-function Home({ environmentTabs, flagSelectors }: HomeProps) {
+function Home({ data = defaultData, environments, flags }: HomeProps) {
     const { colorScheme } = useMantineColorScheme();
     const isDark = colorScheme === "dark";
 
-    const defaultFilename = "server.jar";
+    const router = useRouter();
+    const [shareMutation] = useMutation(share);
+
+    const defaultFilename = data.filename;
     const [filename, setFileName] = useState<string>(defaultFilename);
-    const [memory, setMemory] = useState<number>(4);
+    const [memory, setMemory] = useState<number>(data.memory);
 
     const [toggles, setToggles] = useState({
-        "gui": false,
-        "autoRestart": false,
-        "pterodactyl": false,
-        "modernVectors": true
+        "pterodactyl": data.pterodactyl,
+        "modernVectors": data.modernVectors,
+        "gui": data.gui,
+        "autoRestart": data.autoRestart,
     });
 
     const [result, setResult] = useState<string>("Loading...");
 
-    const [environment, setEnvironment] = useState<EnvironmentType>(Environments.default);
+    const [environment, setEnvironment] = useState<EnvironmentType>(findEnvironment(data.environment));
     const [selectedFlags, setSelectedFlags] = useState<FlagType>(Flags.default);
     const [invalidFilename, setInvalidFilename] = useState<boolean | string>(false);
 
@@ -197,7 +191,7 @@ function Home({ environmentTabs, flagSelectors }: HomeProps) {
                                         }
 
                                         setSelectedFlags(Flags.types[value] ?? selectedFlags);
-                                    }} data={flagSelectors} />
+                                    }} data={flags} />
                                 </Label>
 
                                 {/* Misc toggles */}
@@ -225,21 +219,14 @@ function Home({ environmentTabs, flagSelectors }: HomeProps) {
                                     "whiteSpace": "pre-wrap"
                                 }
                             })} onTabChange={active => {
-                                // Get the selected type from the tab
-                                const key = Object.keys(Environments.types)[active]; // TODO: This is unreliable, but tabKey does not work
-                                if (!key) {
-                                    return;
-                                }
-
-                                // Toggle the non-applicable components
-                                const env = Environments.types[key];
+                                const env = Environments.types[active]; // TODO: This is unreliable, but tabKey does not work
                                 if (!env) {
                                     return;
                                 }
 
                                 setEnvironment(env);
                             }}>
-                                {environmentTabs.map(env => (
+                                {environments.map(env => (
                                     <Prism.Tab key={env.key} label={env.label} icon={getIcon(env.icon)} withLineNumbers language="bash">
                                         {result}
                                     </Prism.Tab>
@@ -257,6 +244,25 @@ function Home({ environmentTabs, flagSelectors }: HomeProps) {
                                     }
                                 }}>
                                     <IconDownload />
+                                </ActionIcon>
+
+                                <ActionIcon color="green" variant="filled" size="lg" onClick={async () => {
+                                    const result = await shareMutation({
+                                        filename,
+                                        memory,
+                                        "pterodactyl": toggles.pterodactyl,
+                                        "modernVectors": toggles.modernVectors,
+                                        "gui": toggles.gui,
+                                        "autoRestart": toggles.autoRestart,
+                                        "flags": selectedFlags.key,
+                                        "environment": environment.key
+                                    });
+
+                                    router.push({
+                                        "pathname": `${router.pathname}/${result.urlHash}`
+                                    });
+                                }}>
+                                    <IconShare />
                                 </ActionIcon>
 
                                 {/* Low memory alert */}
@@ -310,30 +316,10 @@ function Home({ environmentTabs, flagSelectors }: HomeProps) {
 Home.getLayout = page => <Layout>{page}</Layout>;
 
 export function getStaticProps() {
-    // Generate environment tabs from environments
-    const environmentTabs: EnvironmentTab[] = [];
-    for (const [key, value] of Object.entries(Environments.types)) {
-        environmentTabs.push({
-            "key": key,
-            "label": value.label,
-            "icon": value.icon
-        });
-    }
-
-    // Generate flag selector
-    const flagSelectors: FlagSelector[] = [];
-    for (const value of Object.values(Flags.types)) {
-        flagSelectors.push({
-            "value": value.key,
-            "label": value.label,
-            "description": value.description
-        });
-    }
-
     return {
         "props": {
-            environmentTabs,
-            flagSelectors
+            "environments": getEnvironments(),
+            "flags": getFlags()
         }
     };
 }

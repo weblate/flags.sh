@@ -27,7 +27,7 @@ Ensure [Yarn](https://yarnpkg.com) and [Node.js](https://nodejs.org/en) are inst
 2. Install the build dependencies via `yarn install`.
 
 ### 🔨 Running
-First, run through the [setup](-setup) steps.
+First, run through the [setup](#-setup) steps.
 
 - To start a live development build, run `yarn run start:dev`.
   - This will start a server that updates code changes automatically.
