@@ -1,13 +1,14 @@
-import Home from "../index";
+import { Suspense } from "react";
+import { useParam, useQuery } from "blitz";
+import { LoadingOverlay } from "@mantine/core";
+import { Layout } from "../../core/layout/Layout";
+import { Main, MainProps } from "../../core/components/Main";
+import getShare from "./queries/getShare";
+import getOptions from "./queries/getOptions";
 import { getEnvironments } from "../../util/getEnvironments";
 import { getFlags } from "../../util/getFlags";
-import { useParam, useQuery } from "blitz";
-import getShare from "./queries/getShare";
-import { Suspense } from "react";
-import getOptions from "./queries/getOptions";
-import { Layout } from "../../core/layout/Layout";
 
-function Share({ environments, flags }) {
+function Share({ environments, flags }: MainProps) {
     const urlHash = useParam("shareId", "string");
 
     const [share] = useQuery(getShare, {
@@ -19,7 +20,7 @@ function Share({ environments, flags }) {
     });
 
     return (
-        <Home environments={environments} flags={flags} data={{
+        <Main environments={environments} flags={flags} data={{
             "filename": options.filename,
             "memory": options.memory,
             "pterodactyl": options.pterodactyl,
@@ -32,9 +33,9 @@ function Share({ environments, flags }) {
     );
 }
 
-function ShowShare({ environments, flags }) {
+function ShowShare({ environments, flags }: MainProps) {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingOverlay visible={true} />}>
             <Share environments={environments} flags={flags} />
         </Suspense>
     );

@@ -1,6 +1,7 @@
 import { AppProps, AuthorizationError, ErrorBoundary, ErrorComponent, ErrorFallbackProps, useQueryErrorResetBoundary } from "blitz";
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useLocalStorageValue } from "@mantine/hooks";
+import { NotificationsProvider } from "@mantine/notifications";
 
 /**
  * The standard app template for Blitz.js and Mantine UI.
@@ -25,9 +26,11 @@ export default function App({ Component, pageProps }: AppProps) {
                 "primaryColor": "green",
                 colorScheme
             }}>
-                <ErrorBoundary FallbackComponent={RootErrorFallback} onReset={useQueryErrorResetBoundary().reset}>
-                    {getLayout(<Component {...pageProps} />)}
-                </ErrorBoundary>
+                <NotificationsProvider>
+                    <ErrorBoundary FallbackComponent={RootErrorFallback} onReset={useQueryErrorResetBoundary().reset}>
+                        {getLayout(<Component {...pageProps} />)}
+                    </ErrorBoundary>
+                </NotificationsProvider>
             </MantineProvider>
         </ColorSchemeProvider>
     );
