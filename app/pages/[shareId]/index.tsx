@@ -8,13 +8,18 @@ import getOptions from "./queries/getOptions";
 import { getEnvironments } from "../../util/getEnvironments";
 import { getFlags } from "../../util/getFlags";
 
+/**
+ * The result of the passed share ID.
+ */
 function Share({ environments, flags }: MainProps) {
     const urlHash = useParam("shareId", "string");
 
+    // Get the provided share
     const [share] = useQuery(getShare, {
         "urlHash": urlHash
     });
 
+    // Get the share's options
     const [options] = useQuery(getOptions, {
         "id": share.id
     });
@@ -33,6 +38,9 @@ function Share({ environments, flags }: MainProps) {
     );
 }
 
+/**
+ * The page utilized for shares.
+ */
 function ShowShare({ environments, flags }: MainProps) {
     return (
         <Suspense fallback={<LoadingOverlay visible={true} />}>

@@ -18,12 +18,31 @@ import { FooterRow } from "./actionButton/FooterRow";
 import { MemoryModal } from "./modal/MemoryModal";
 import { FlagModal } from "./modal/FlagModal";
 
+/**
+ * Properties for the Main component.
+ */
 export interface MainProps {
+    /**
+     * The tabs to show as environments.
+     */
     "environments": EnvironmentTab[],
+
+    /**
+     * The flags to show in the selector.
+     */
     "flags": FlagSelector[],
+
+    /**
+     * The data utilized by shares.
+     *
+     * Defaults to {@see defaultData}
+     */
     "data"?: typeof defaultData
 }
 
+/**
+ * The default data utilized without share data.
+ */
 export const defaultData = {
     "filename": "server.jar",
     "memory": 4,
@@ -35,6 +54,9 @@ export const defaultData = {
     "environment": Environments.default.key
 };
 
+/**
+ * The main "control panel" of the site.
+ */
 export function Main({ data = defaultData, environments, flags }: MainProps) {
     const { colorScheme } = useMantineColorScheme();
     const isDark = colorScheme === "dark";
@@ -43,6 +65,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
     const clipboard = useClipboard();
     const [shareMutation] = useMutation(share);
 
+    // Options states
     const defaultFilename = data.filename;
     const [filename, setFileName] = useState<string>(defaultFilename);
     const [memory, setMemory] = useState<number>(data.memory);
@@ -56,15 +79,16 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
 
     const [result, setResult] = useState<string>("Loading...");
 
+    // Selector states
     const [activeTab, setActiveTab] = useState<number>(findEnvironment(data.environment).index);
     const [environment, setEnvironment] = useState<EnvironmentType>(findEnvironment(data.environment).result);
     const [selectedFlags, setSelectedFlags] = useState<FlagType>(findFlag(data.flags).result);
     const [invalidFilename, setInvalidFilename] = useState<boolean | string>(false);
+    const [disabled, setDisabled] = useState({ ...selectedFlags.disabled, ...environment.disabled });
 
+    // Modal states
     const [openMemoryModal, setOpenMemoryModal] = useState(false);
     const [openFlagModal, setOpenFlagModal] = useState(false);
-
-    const [disabled, setDisabled] = useState({ ...selectedFlags.disabled, ...environment.disabled });
 
     // The environment's toggles have changed
     useEffect(() => {
@@ -214,7 +238,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
                                     "whiteSpace": "pre-wrap"
                                 }
                             })} onTabChange={active => {
-                                const env = Environments.types[active]; // TODO: This is unreliable, but tabKey does not work
+                                const env = Environments.types[active];
                                 if (!env) {
                                     return;
                                 }
@@ -243,6 +267,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
                                 </ActionIcon>
 
                                 <ActionIcon color="green" variant="filled" size="lg" onClick={async () => {
+                                    // Create the share in DB
                                     const result = await shareMutation({
                                         filename,
                                         memory,
@@ -254,8 +279,10 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
                                         "environment": environment.key
                                     });
 
+                                    // Copy to the clipboard
                                     clipboard.copy(`${getBaseUrl().href}${result.urlHash}`);
 
+                                    // Display the copied notification
                                     notifications.showNotification({
                                         "disallowClose": true,
                                         "title": "Copied!",

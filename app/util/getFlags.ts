@@ -20,9 +20,10 @@ export interface FlagSelector {
     "description"?: string
 }
 
+/**
+ * Generate the flag selector.
+ */
 export function getFlags() {
-    // Generate flag selector
-    // TODO: Reflect changes in Environments#types
     const flags: FlagSelector[] = [];
     for (const value of Object.values(Flags.types)) {
         flags.push({
