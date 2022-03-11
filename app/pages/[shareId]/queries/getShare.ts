@@ -6,7 +6,7 @@ export interface ShareOptions {
 }
 
 export default resolver.pipe(async ({ urlHash }) => {
-    const share = await db.share.findFirst({
+    const share = await db.share.findUnique({
         "where": {
             urlHash
         }

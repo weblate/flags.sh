@@ -16,17 +16,26 @@ export const SiteDetails = {
     }
 };
 
-function findKey<T extends Keyed>(set: T[], key: string): T {
-    let result;
+interface Result<T> {
+    "result": T,
+    "index": number
+}
 
-    for (const value of set) {
-        if (key === value.key) {
-            result = value;
+function findKey<T extends Keyed>(set: T[], key: string): Result<T> {
+    let result;
+    let i = 0;
+
+    for (; i < set.length; i++) {
+        if (key === set[i].key) {
+            result = set[i];
             break;
         }
     }
 
-    return result;
+    return {
+        result,
+        "index": i
+    };
 }
 
 export function findEnvironment(key: string) {

@@ -56,8 +56,9 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
 
     const [result, setResult] = useState<string>("Loading...");
 
-    const [environment, setEnvironment] = useState<EnvironmentType>(findEnvironment(data.environment));
-    const [selectedFlags, setSelectedFlags] = useState<FlagType>(findFlag(data.flags));
+    const [activeTab, setActiveTab] = useState<number>(findEnvironment(data.environment).index);
+    const [environment, setEnvironment] = useState<EnvironmentType>(findEnvironment(data.environment).result);
+    const [selectedFlags, setSelectedFlags] = useState<FlagType>(findFlag(data.flags).result);
     const [invalidFilename, setInvalidFilename] = useState<boolean | string>(false);
 
     const [openMemoryModal, setOpenMemoryModal] = useState(false);
@@ -184,7 +185,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
                                             return;
                                         }
 
-                                        setSelectedFlags(findFlag(value) ?? selectedFlags);
+                                        setSelectedFlags(findFlag(value).result ?? selectedFlags);
                                     }} data={flags} />
                                 </Label>
 
@@ -204,7 +205,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
 
                         {/* Resulting flags */}
                         <Label label={<Text size="xl" weight={700}>Result</Text>}>
-                            <Prism.Tabs styles={theme => ({
+                            <Prism.Tabs active={activeTab} styles={theme => ({
                                 "copy": {
                                     "backgroundColor": isDark ? theme.colors.dark[6] : theme.colors.gray[0],
                                     "borderRadius": theme.radius.xs
@@ -218,6 +219,7 @@ export function Main({ data = defaultData, environments, flags }: MainProps) {
                                     return;
                                 }
 
+                                setActiveTab(active);
                                 setEnvironment(env);
                             }}>
                                 {environments.map(env => (
