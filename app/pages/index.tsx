@@ -3,9 +3,12 @@ import { Main, MainProps } from "../core/components/Main";
 import { getEnvironments } from "../util/getEnvironments";
 import { getFlags } from "../util/getFlags";
 
-// TODO: API
-// TODO: i18n
-// TODO: Server-side colorScheme
+// TODO:
+// - API
+// - i18n with crowdin
+// - Server-side colorScheme
+// - Mobile view
+// - Update about page
 
 // BUG: Java tab -> enable pterodactyl -> apply -> disable pterodactyl -> apply -> GUI will still be disabled
 

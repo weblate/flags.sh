@@ -51,6 +51,8 @@ export interface ShareOptions {
     "environment": string
 }
 
+// TODO: Input validation
+
 /**
  * Create a share entry in the database.
  */
