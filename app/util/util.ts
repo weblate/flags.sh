@@ -42,7 +42,7 @@ function findKey<T extends Keyed>(set: T[], key: string): KeyResult<T> {
     let i = 0;
 
     for (; i < set.length; i++) {
-        if (key === set[i].key) {
+        if (key === set[i]?.key) {
             // Key found, return early
             result = set[i];
             break;
