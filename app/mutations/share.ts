@@ -23,8 +23,19 @@ export default resolver.pipe(async ({
     flags,
     environment
 }: ShareOptions) => {
-    // TODO: Dupe detection
-    const urlHash = nid(5);
+    let urlHash;
+
+    while (true) {
+        urlHash = nid(5);
+
+        if (!await db.share.findUnique({
+            "where": {
+                "urlHash": urlHash
+            }
+        })) {
+            break;
+        }
+    }
 
     return db.share.create({
         "data": {

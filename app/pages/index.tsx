@@ -8,7 +8,6 @@ import { getFlags } from "../util/getFlags";
 // TODO: Server-side colorScheme
 
 // BUG: Java tab -> enable pterodactyl -> apply -> disable pterodactyl -> apply -> GUI will still be disabled
-// BUG: Environment tab is not utilized in share
 
 /**
  * The homepage of the site.
