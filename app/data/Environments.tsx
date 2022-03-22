@@ -117,8 +117,10 @@ export const Environments: EnvironmentsInterface = {
                 done
             `);
         },
-        "disabled": {
-            "pterodactyl": true
+        "overrides": {
+            "pterodactyl": {
+                "disabled": true
+            }
         }
     }, {
         "key": "windows",
@@ -137,8 +139,10 @@ export const Environments: EnvironmentsInterface = {
                 goto :start
             `);
         },
-        "disabled": {
-            "pterodactyl": true
+        "overrides": {
+            "pterodactyl": {
+                "disabled": true
+            }
         }
     }, {
         "key": "java",
@@ -147,14 +151,28 @@ export const Environments: EnvironmentsInterface = {
         "result": ({ flags }) => {
             return flags;
         },
-        "disabled": {
-            "pterodactyl": false,
-            "autoRestart": true,
-            "download": true
-        },
-        "requires": {
+        "overrides": {
+            "autoRestart": {
+                "disabled": true
+            },
+            "download": {
+                "disabled": true
+            },
             "gui": {
-                "excludes": ["pterodactyl"]
+                "conditions": {
+                    "pterodactyl": {
+                        "depends": false,
+                        "value": "DISABLED"
+                    }
+                }
+            },
+            "filename": {
+                "conditions": {
+                    "pterodactyl": {
+                        "depends": true,
+                        "value": "{{SERVER_JARFILE}}"
+                    }
+                }
             }
         }
     }]
