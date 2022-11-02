@@ -1,25 +1,22 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "baseUrl": "./",
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": false,
-        "strictNullChecks": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "noUncheckedIndexedAccess": true,
-        "esModuleInterop": true,
-        "module": "esnext",
+        "target": "ES2020",
+        "lib": ["DOM", "DOM.Iterable", "ES2020"],
+        "module": "ES2020",
         "moduleResolution": "node",
-        "resolveJsonModule": true,
+        "jsx": "react-jsx",
+        "strict": true,
         "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true,
-        "tsBuildInfoFile": ".tsbuildinfo",
-        "downlevelIteration": true
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["./app/*"],
+            "a/*": ["./app/asset/*"]
+        },
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true
     },
-    "exclude": ["node_modules", "**/*.e2e.ts", "cypress"],
-    "include": ["blitz-env.d.ts", "**/*.ts", "**/*.tsx"]
+    "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"]
 }

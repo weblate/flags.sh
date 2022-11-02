@@ -18,7 +18,7 @@
 
 Includes many configuration options such as Aikar's flags, automatic restarting, and Pterodactyl overhead calculation.
 
-Inspired by [startmc.sh](https://startmc.sh), built with [Blitz.js](https://blitzjs.com) and [Mantine UI](https://mantine.dev).
+Inspired by [startmc.sh](https://startmc.sh), built with [Remix](https://remix.run) and [Mantine UI](https://mantine.dev).
 
 ### 🔨 Building
 Ensure [Yarn](https://yarnpkg.com) and [Node.js](https://nodejs.org/en) are installed.
@@ -26,5 +26,5 @@ Ensure [Yarn](https://yarnpkg.com) and [Node.js](https://nodejs.org/en) are inst
 1. Enter the directory containing the flags.sh source code in your terminal.
 2. Install the build dependencies via `yarn install`.
 3. Either start a live development environment, or build for production.
-   - `yarn run dev`: Start a live development environment
-   - `yarn run export`: Build for production to `/out/`
+   - `yarn run start:dev`: Start a live development environment
+   - `yarn run start:prod`: Start a production environment
