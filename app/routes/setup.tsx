@@ -11,7 +11,9 @@ import { Anchor } from "@encode42/remix-extras";
 import { details } from "~/data/details";
 import { StandardLayout } from "~/layout/StandardLayout";
 import { useSetState } from "@mantine/hooks";
-import { useForm } from "@mantine/form";
+import { useForm, zodResolver } from "@mantine/form";
+import { z } from "zod";
+import { Options } from "~/util/validation/generate/validation";
 
 interface Tab {
     "value": string,
@@ -141,8 +143,9 @@ export default function SetupPage() {
         );
     };
 
-    const form = useForm({
-        "initialValues": Object.fromEntries(Object.entries(config).map(([key, value]) => ([key, value.defaultValue])))
+    const form = useForm<z.infer<typeof Options>>({
+        "initialValues": Options.parse({}),
+        "validate": zodResolver(Options)
     });
 
     return (

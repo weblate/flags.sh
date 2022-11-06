@@ -2,9 +2,9 @@ import { TablerIconsType } from "@encode42/tabler-icons-types";
 
 export type AvailableTypes = "TextInput" | "Select" | "Slider" | "Checkbox" | "Flags";
 
-type AvailableConfig = keyof typeof config;
-type AvailableFlags = keyof typeof flags;
-type AvailableExtraFlags = keyof typeof extraFlags;
+export type AvailableConfig = keyof typeof config;
+export type AvailableFlags = keyof typeof flags;
+export type AvailableExtraFlags = keyof typeof extraFlags;
 
 export type AvailableOperatingSystem = keyof typeof environment.operatingSystem;
 export type AvailableServerType = keyof typeof environment.serverType;
@@ -170,7 +170,6 @@ export const config: Config = {
     "filename": {
         "label": "File name",
         "description": "The name of the file that will be used to start your server.",
-        "defaultValue": "server.jar",
         "row": 0,
         "type": {
             "component": "TextInput",
@@ -189,7 +188,6 @@ export const config: Config = {
     "memory": {
         "label": "Memory",
         "description": "The amount of memory (RAM) to allocate to your server. Values below <Code>4 GB</Code> and above <Code>12 GB</Code> aren't recommended.",
-        "defaultValue": 4,
         "row": 1,
         "type": {
             "component": "Slider",
@@ -210,7 +208,6 @@ export const config: Config = {
     "gui": {
         "label": "GUI",
         "description": "Whether to display the built-in management GUI.",
-        "defaultValue": false,
         "row": 2,
         "type": {
             "component": "Checkbox",
@@ -223,7 +220,6 @@ export const config: Config = {
     "autorestart": {
         "label": "Auto-restart",
         "description": "Whether to automatically restart after crash.",
-        "defaultValue": false,
         "row": 2,
         "type": {
             "component": "Checkbox",
@@ -236,7 +232,6 @@ export const config: Config = {
     "variables": {
         "label": "Use variables",
         "description": "Whether to use script variables for common elements.",
-        "defaultValue": false,
         "row": 2,
         "isAdvanced": true,
         "type": {
