@@ -10,6 +10,8 @@ import { TablerIcon } from "~/component/TablerIcon";
 import { Anchor } from "@encode42/remix-extras";
 import { details } from "~/data/details";
 import { StandardLayout } from "~/layout/StandardLayout";
+import { useSetState } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 
 interface Tab {
     "value": string,
@@ -60,24 +62,32 @@ export default function SetupPage() {
         return newRows;
     }, []);
 
-    function createType(type: ConfigType) {
+    function createType(type: ConfigType, key: string) {
         let component: ReactNode;
 
         switch (type.component) {
             case "TextInput": {
-                component = <TextInput icon={type.icon && <TablerIcon type={type.icon} />} {...type.props} />;
+                component = (
+                    <TextInput icon={type.icon && <TablerIcon type={type.icon} />} {...type.props} {...form.getInputProps(key)} />
+                );
                 break;
             }
             case "Select": {
-                component = <Select icon={type.icon && <TablerIcon type={type.icon} />} {...type.props} />;
+                component = (
+                    <Select icon={type.icon && <TablerIcon type={type.icon} />} {...type.props} {...form.getInputProps(key)} />
+                );
                 break;
             }
             case "Slider": {
-                component = <MarkedSlider {...type.props} />;
+                component = (
+                    <MarkedSlider {...type.props} {...form.getInputProps(key)} />
+                );
                 break;
             }
             case "Checkbox": {
-                component = <Checkbox icon={type.icon && (({ className }) => <TablerIcon type={type.icon ?? "IconQuestionMark"} className={className} />)} {...type.props} />;
+                component = (
+                    <Checkbox icon={type.icon && (({ className }) => <TablerIcon type={type.icon ?? "IconQuestionMark"} className={className} />)} {...type.props} {...form.getInputProps(key)} />
+                );
                 break;
             }
             case "Flags": {
@@ -103,7 +113,7 @@ export default function SetupPage() {
                 }
 
                 component = (
-                    <Select icon={<TablerIcon type="IconFlag" />} defaultValue={displayedCombinations[0].value} data={displayedCombinations} {...type.props} />
+                    <Select icon={<TablerIcon type="IconFlag" />} defaultValue={displayedCombinations[0].value} data={displayedCombinations} {...type.props} {...form.getInputProps(key)} />
                 );
                 break;
             }
@@ -130,6 +140,10 @@ export default function SetupPage() {
             </Button>
         );
     };
+
+    const form = useForm({
+        "initialValues": Object.fromEntries(Object.entries(config).map(([key, value]) => ([key, value.defaultValue])))
+    });
 
     return (
         <StandardLayout>
@@ -215,7 +229,7 @@ export default function SetupPage() {
                                                 <Title order={3}>{configOption.label}</Title>
                                                 <Text color="dimmed" size="sm">{configOption.description}</Text>
                                             </Stack>
-                                            {createType(configOption.type)}
+                                            {createType(configOption.type, configOption.key)}
                                         </Stack>
                                     ) : false).filter(Boolean)}
                                 </SimpleGrid>

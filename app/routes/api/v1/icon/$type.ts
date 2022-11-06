@@ -1,11 +1,8 @@
 import { RouteParams } from "@encode42/remix-extras";
 import { json } from "@remix-run/node";
 import { FetchIcon } from "~/util/validation/validation";
-import fs from "fs";
+import fs from "fs/promises";
 import * as tablerIcons from "@tabler/icons";
-import { promisify } from "util";
-
-const readFile = promisify(fs.readFile);
 
 export async function loader({ params }: RouteParams) {
     if (!params.type) {
@@ -25,10 +22,11 @@ export async function loader({ params }: RouteParams) {
         });
     }
 
+    // eslint-disable-next-line import/namespace
     const icon = tablerIcons[validation.data];
     const iconName = icon.toString().match(/icon-tabler-(.*?)"/);
 
-    return new Response(await readFile(`node_modules/@tabler/icons/icons/${iconName[1]}.svg`), {
+    return new Response(await fs.readFile(`node_modules/@tabler/icons/icons/${iconName?.[1]}.svg`), {
         "status": 200,
         "headers": {
             "Content-Type": "image/svg+xml",
